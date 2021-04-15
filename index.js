@@ -4,6 +4,7 @@ require('dotenv').config()
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const MongoClient = require('mongodb').MongoClient;
+const ObjectID = require('mongodb').ObjectID;
 const FileUpload = require('express-fileupload');
 const imageToBase64 = require('image-to-base64');
 const port = process.env.PORT || 5000;
@@ -39,6 +40,13 @@ client.connect(err => {
         .toArray((err, documents) => {
             res.send(documents);
         })
+    })
+
+    app.delete('/serviceDelete', (req, res) => {
+        services.deleteOne({_id: ObjectID(req.query.id)})
+            .then(response => {
+                console.log(response);
+            })
     })
 });
 
