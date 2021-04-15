@@ -18,6 +18,7 @@ const uri = `mongodb+srv://${ process.env.DB_USER }:${ process.env.DB_PASS }@clu
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
     const services = client.db(`${ process.env.DB_NAME }`).collection("services");
+    const orders = client.db(`${ process.env.DB_NAME }`).collection("orders");
 
     app.post('/addservice', (req, res) => {
         const newImg = req.files.image.data;
@@ -55,6 +56,13 @@ client.connect(err => {
         })
             .toArray((err, documents) => {
                 res.send(documents);
+            })
+    })
+
+    app.post('/order', (req, res) => {
+        orders.insertOne(req.body)
+            .then(response => {
+                res.send(response);
             })
     })
 
