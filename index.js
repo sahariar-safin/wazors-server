@@ -37,17 +37,27 @@ client.connect(err => {
 
     app.get('/services', (req, res) => {
         services.find({})
-        .toArray((err, documents) => {
-            res.send(documents);
-        })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
     })
 
     app.delete('/serviceDelete', (req, res) => {
-        services.deleteOne({_id: ObjectID(req.query.id)})
+        services.deleteOne({ _id: ObjectID(req.query.id) })
             .then(response => {
                 console.log(response);
             })
     })
+
+    app.get('/service', (req, res) => {
+        services.find({
+            _id: ObjectID(req.query.id)
+        })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
 });
 
 app.get('/', (req, res) => {
