@@ -19,6 +19,8 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 client.connect(err => {
     const services = client.db(`${ process.env.DB_NAME }`).collection("services");
     const orders = client.db(`${ process.env.DB_NAME }`).collection("orders");
+    const users = client.db(`${ process.env.DB_NAME }`).collection("users");
+    const review = client.db(`${ process.env.DB_NAME }`).collection("review");
 
     app.post('/addservice', (req, res) => {
         const newImg = req.files.image.data;
@@ -59,10 +61,45 @@ client.connect(err => {
             })
     })
 
-    app.post('/order', (req, res) => {
+    app.post('/addUser', (req, res) => {
+        users.insertOne(req.body)
+            .then(response => {
+                res.send("I have added you on my database man!");
+            })
+    })
+
+    app.post('/addOrder', (req, res) => {
         orders.insertOne(req.body)
             .then(response => {
                 res.send(response);
+            })
+    })
+
+    app.post('/addReview', (req, res) => {
+        review.insertOne(req.body)
+            .then(response => {
+                res.send(response);
+            })
+    })
+
+    app.get('/review', (req, res) => {
+        review.find({})
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
+    app.post('/order', (req, res) => {
+        orders.find({ email: req.body.email })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
+    app.post('/isAdmin', (req, res) => {
+        users.find({ _id: req.body.email })
+            .toArray((err, documents) => {
+                res.send(documents);
             })
     })
 
