@@ -96,11 +96,59 @@ client.connect(err => {
             })
     })
 
+    app.get('/orders', (req, res) => {
+        orders.find({})
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
+    app.get('/users', (req, res) => {
+        users.find({})
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
     app.post('/isAdmin', (req, res) => {
         users.find({ _id: req.body.email })
             .toArray((err, documents) => {
                 res.send(documents);
             })
+    })
+
+    app.post('/manageOrder', (req, res) => {
+        if (req.body.orderStatus === "Pending") {
+            orders.updateOne({ _id: ObjectID(req.body.orderId) },
+                { $set: { orderStatus: "On going" } })
+                .then(response => {
+                    res.send(response);
+                })
+        }
+        if (req.body.orderStatus === "On going") {
+            orders.updateOne({ _id: ObjectID(req.body.orderId) },
+                { $set: { orderStatus: "Done" } })
+                .then(response => {
+                    res.send(response);
+                })
+        }
+    })
+
+    app.post('/managePeople', (req, res) => {
+        if (req.body.peopleRole === " false") {
+            users.updateOne({ _id: req.body.peopleId },
+                { $set: { isAdmin: true } })
+                .then(response => {
+                    res.send(response);
+                })
+        }
+        if (req.body.peopleRole === "true") {
+            users.updateOne({ _id: req.body.peopleId },
+                { $set: { isAdmin: false } })
+                .then(response => {
+                    res.send(response);
+                })
+        }
     })
 
 });
